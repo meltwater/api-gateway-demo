@@ -1,0 +1,19 @@
+FROM nginx:1.11.5
+
+RUN apt-get update; apt-get install dnsmasq curl -y
+
+COPY nginx/*            /etc/nginx/
+COPY nginx/conf.d/*     /etc/nginx/conf.d/
+
+COPY tests/hosts/hosts               /etc/test.hosts
+COPY tests/nginx                     /etc/nginx/
+COPY tests/ssl/nginx-selfsigned.crt  /etc/ssl/certs/nginx-selfsigned.crt
+COPY tests/ssl/nginx-selfsigned.key  /etc/ssl/private/nginx-selfsigned.key
+
+RUN mkdir /service
+COPY tests/launch.sh /service/
+
+WORKDIR /service
+ENTRYPOINT ["./launch.sh"]
+
+STOPSIGNAL SIGQUIT

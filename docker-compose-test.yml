@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.tests
+    cap_add:
+      - NET_ADMIN
+    ports:
+     - "81:80"
