@@ -1,7 +1,8 @@
 describe "gateway" do
+  GATEWAY_BASE_URL = "http://localhost:81"
   context "/_health" do
     context "get" do
-      result = Client.get "http://localhost:81/_health"
+      result = Client.get "#{GATEWAY_BASE_URL}/_health"
       it "return 200" do
         expect(result.code).to eq(200)
       end
@@ -12,7 +13,7 @@ describe "gateway" do
   end
   context "/path1" do
     context "get" do
-      result = Client.get "http://localhost:81/path1"
+      result = Client.get "#{GATEWAY_BASE_URL}/path1"
       it "return 200" do
         expect(result.code).to eq(200)
       end
@@ -25,7 +26,7 @@ describe "gateway" do
     end
     context "/some_id" do
       context "get" do
-        result = Client.get "http://localhost:81/path1/some_id"
+        result = Client.get "#{GATEWAY_BASE_URL}/path1/some_id"
         it "return 200" do
           expect(result.code).to eq(200)
         end
@@ -40,7 +41,7 @@ describe "gateway" do
   end
   context "/path2" do
     context "get" do
-      result = Client.get "http://localhost:81/path2"
+      result = Client.get "#{GATEWAY_BASE_URL}/path2"
       it "return 404" do
         expect(result.code).to eq(404)
       end
@@ -49,15 +50,17 @@ describe "gateway" do
       end
     end
     context "/some_id" do
-      result = Client.get "http://localhost:81/path2/some_id"
-      it "return 200" do
-        expect(result.code).to eq(200)
-      end
-      it "proxy to service3" do
-        expect(result.body).to eq("https://service3.myapi.com/v1/path2/some_id")
-      end
-      it "response header does not contain nginx version" do
-        expect(result.headers[:server]).to eq("nginx")
+      context "get" do
+        result = Client.get "#{GATEWAY_BASE_URL}/path2/some_id"
+        it "return 200" do
+          expect(result.code).to eq(200)
+        end
+        it "proxy to service3" do
+          expect(result.body).to eq("https://service3.myapi.com/v1/path2/some_id")
+        end
+        it "response header does not contain nginx version" do
+          expect(result.headers[:server]).to eq("nginx")
+        end
       end
     end
   end
