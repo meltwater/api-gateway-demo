@@ -18,7 +18,7 @@ describe "gateway" do
         expect(result.code).to eq(200)
       end
       it "proxy to service2" do
-        expect(result.body).to eq("https://service2.myapi.com/v1/path1")
+        expect(result.body).to eq("https://service1.myapi.com/v1/path1")
       end
       it "response header does not contain nginx version" do
         expect(result.headers[:server]).to eq("nginx")
@@ -31,7 +31,7 @@ describe "gateway" do
           expect(result.code).to eq(200)
         end
         it "proxy to service1" do
-          expect(result.body).to eq("https://service1.myapi.com/v1/path1/some_id")
+          expect(result.body).to eq("https://service2.myapi.com/v1/path1/some_id")
         end
         it "response header does not contain nginx version" do
           expect(result.headers[:server]).to eq("nginx")
