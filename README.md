@@ -1,7 +1,9 @@
 API GATEWAY DEMO
 ================
 
-This is an example how to test nginx api gateway with ruby rspec.
+This is an example how to setup test environment for Nginx gateway with tests
+implemented using [Ruby Rspec](http://rspec.info/) framework.
+Check our [blog](http://underthehood.meltwater.com) for details of our approach.
 
 # Prerequisites
 * [docker](https://www.docker.com/)
@@ -11,7 +13,7 @@ This is an example how to test nginx api gateway with ruby rspec.
 
 # Project structure explained
 ~~~bash
-├── nginx (gateway configuration)
+├── nginx (Gateway configuration)
 │   ├── conf.d
 │   │   └── api-gateway.conf (Location directives)
 │   ├── dns.conf (DNS resolver)
@@ -25,26 +27,33 @@ This is an example how to test nginx api gateway with ruby rspec.
     │   └── dns.conf (Test DNS resolver)
 ~~~
 
-Setting up the test docker container required 3 extra steps on top of the target Nginx setup:
-* Install and run dnsmasq (Step 1)
-* Override /etc/hosts file with DNS names for our internal services (Step 2)
+Setting up the test docker container required 4 extra steps on top of the target Nginx setup:
+* Install and run `dnsmasq` (Step 1)
+* Override `/etc/hosts` file with DNS names for our internal services (Step 2)
 * Override production DNS resolver and inject virtual server configuration mocking internal services (Step 3)
+* Include self signed ssl certificate used in internal services mock (Step 4)
 
-~~~
+~~~dockerfile
 # Production config
-COPY nginx/*              /etc/nginx/
-COPY nginx/conf.d/*       /etc/nginx/conf.d/
-
+COPY nginx/*                        /etc/nginx/
+COPY nginx/conf.d/*                 /etc/nginx/conf.d/
 
 # Test setup
 
 # Step 1
 RUN apt-get update; apt-get install dnsmasq -y
 
-# Step 2
-COPY tests/hosts/hosts    /etc/test.hosts
+# Step 2 - we can not directly copy it to /etc/hosts since docker will
+# regenerate the file and overwrite our changes. We will copy content from
+# /etc/test.hosts to /etc/hosts on runtime in launch.sh script
+COPY tests/hosts/hosts                /etc/test.hosts
+
 # Step 3
-COPY tests/nginx          /etc/nginx/
+COPY tests/nginx                      /etc/nginx/
+
+# Step 4
+COPY tests/ssl/nginx-selfsigned.crt   /etc/ssl/certs/nginx-selfsigned.crt
+COPY tests/ssl/nginx-selfsigned.key   /etc/ssl/private/nginx-selfsigned.key
 ~~~
 
 # Run tests
