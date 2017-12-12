@@ -1,9 +1,10 @@
 API GATEWAY DEMO
 ================
 
-This is an example how to setup test environment for Nginx gateway with tests
-implemented using [Ruby Rspec](http://rspec.info/) framework.
-Check our [blog](http://underthehood.meltwater.com) for details of our approach.
+This is an example of how to set up a test environment for an Nginx gateway, with tests
+implemented using [Ruby Rspec](http://rspec.info/).
+
+Please read our blog posts [Lightweight Tests for your Nginx API Gateway](http://underthehood.meltwater.com/blog/2017/12/12/lightweight-tests-for-your-nginx-api-gateway/) to understand the details of our testing approach.
 
 # Prerequisites
 * [docker](https://www.docker.com/)
