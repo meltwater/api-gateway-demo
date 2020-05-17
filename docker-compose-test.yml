@@ -9,3 +9,5 @@ services:
       - NET_ADMIN
     ports:
      - "81:80"
+    volumes: 
+     - ${PWD}/nginx/conf.d/api-gateway.conf:/etc/nginx/conf.d/api-gateway.conf
