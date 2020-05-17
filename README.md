@@ -2,15 +2,15 @@ API GATEWAY DEMO
 ================
 
 This is an example of how to set up a test environment for an Nginx gateway, with tests
-implemented using [Ruby Rspec](http://rspec.info/).
+implemented using [pytest](https://docs.pytest.org/en/latest/).
 
-Please read our blog posts [Lightweight Tests for your Nginx API Gateway](http://underthehood.meltwater.com/blog/2017/12/12/lightweight-tests-for-your-nginx-api-gateway/) to understand the details of our testing approach.
+
+Based on this post: [Lightweight Tests for your Nginx API Gateway](http://underthehood.meltwater.com/blog/2017/12/12/lightweight-tests-for-your-nginx-api-gateway/)
 
 # Prerequisites
 * [docker](https://www.docker.com/)
 * [docker-compose](https://docs.docker.com/compose/)
-* [ruby 2.4.0](https://www.ruby-lang.org/en/news/2016/12/25/ruby-2-4-0-released/)
-* [bundler](http://bundler.io/)
+* [Python 3.7](https://wiki.python.org/moin/BeginnersGuide/Download)
 
 # Project structure explained
 ~~~bash
@@ -34,36 +34,24 @@ Setting up the test docker container required 4 extra steps on top of the target
 * Override production DNS resolver and inject virtual server configuration mocking internal services (Step 3)
 * Include self signed ssl certificate used in internal services mock (Step 4)
 
-~~~dockerfile
-# Production config
-COPY nginx/*                        /etc/nginx/
-COPY nginx/conf.d/*                 /etc/nginx/conf.d/
-
-# Test setup
-
-# Step 1
-RUN apt-get update; apt-get install dnsmasq -y
-
-# Step 2 - we can not directly copy it to /etc/hosts since docker will
-# regenerate the file and overwrite our changes. We will copy content from
-# /etc/test.hosts to /etc/hosts on runtime in launch.sh script
-COPY tests/hosts/hosts                /etc/test.hosts
-
-# Step 3
-COPY tests/nginx                      /etc/nginx/
-
-# Step 4
-COPY tests/ssl/nginx-selfsigned.crt   /etc/ssl/certs/nginx-selfsigned.crt
-COPY tests/ssl/nginx-selfsigned.key   /etc/ssl/private/nginx-selfsigned.key
-~~~
 
 # Run tests
 Set up testing environment:
 ~~~bash
-$ make compose-up-test
+$ make start
 ~~~
 
 Execute tests:
 ~~~bash
 $ make test
+~~~
+
+Reload [api-gateway.conf](nginx/conf.d/api-gateway.conf):
+~~~bash
+$ make reload
+~~~
+
+Stop:
+~~~bash
+$ make stop
 ~~~
