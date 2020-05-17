@@ -5,6 +5,9 @@ test: compose-up-test test_deps
 
 test_deps:
 	bundle install
+	
+compose-reload:
+	docker-compose -f docker-compose-test.yml exec web nginx -s reload
 
 compose-up-test:
 	docker-compose -f docker-compose-test.yml up -d --build
